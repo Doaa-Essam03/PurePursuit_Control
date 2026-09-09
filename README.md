@@ -13,5 +13,4 @@ Testing dynamic target switching across mathematical curves (S-Curves, Sharp Tur
 ### 3. Full Track Navigation (ICRA 2026 Competition)
 Full-lap navigation on competition racelines using search-window target lookup, $100\text{ Hz}$ control loops, filtered odometry state feedback, and ground-truth comparison.
 * Location: `media/03_csv_fixed_lookahead/`
-
-<video src="pure_pursuit_pkg/Media/03_track_navigation.webm" width="600" controls></video>
+![ICRA 2026 Full Track Navigation](pure_pursuit_pkg/Media/03_track_navigation.png)
