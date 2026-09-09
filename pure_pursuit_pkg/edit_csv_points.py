@@ -3,6 +3,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+"""
+===============================================================================
+Module: edit_csv_points.py
+Description:
+    Data preprocessing utility to downsample dense track CSV waypoints.
+    Reduces path point density to optimize controller lookahead processing speed.
+===============================================================================
+"""
+
 # Load the CSV file
 path_df = pd.read_csv('/home/doaa/f1_tenth/src/pure_pursuit_pkg/pure_pursuit_pkg/csv_paths_practice_cdc/Centerline_points.csv')
 
@@ -17,7 +26,7 @@ x = reduced_df['positions_X']
 y = reduced_df['positions_y']
 
 plt.figure(figsize=(8, 6))
-plt.plot(x, y, marker='o', linestyle='-', color='c', label='Reduced Path')
+plt.plot(x, y, linestyle='-', color='c', label='Reduced Path')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Reduced Path (Every 10th Point)')

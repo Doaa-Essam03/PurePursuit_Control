@@ -1,6 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+===============================================================================
+Module: paths.py
+Description:
+    Synthetic path generation and visualization utility for Pure Pursuit testing.
+    Generates Straight Line, S-Curve, Circle, Sharp Turn, and Zig-Zag trajectories.
+===============================================================================
+"""
+
+#===============================================================================
+#-----------------  different paths for testing the PPS -----------------------
+#===============================================================================
+
 # Desired start point
 x_start = 0.748
 y_start = 3.16

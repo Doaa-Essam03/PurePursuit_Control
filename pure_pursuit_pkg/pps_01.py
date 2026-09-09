@@ -8,11 +8,25 @@ from std_msgs.msg import String , Float32
 from geometry_msgs.msg import Point 
 from sensor_msgs.msg import Imu
 
-''' 1 > the initial position of car known from ips sensor data  
-    2 > the target here is one goal point to verfiy the pure pursuit control
-    start with a one goal point (selected based on a lookahead assumed ) located on the y axis of the car 
-    3 > impelement the pure pursuit formula to get the steering angle value
-'''
+"""
+===============================================================================
+Module: pps_01.py
+Description:
+    ROS 2 Pure Pursuit Controller for a single static goal point.
+    
+    This node serves as the baseline proof-of-concept for verifying coordinate
+    transformation from world frame to vehicle frame, curvature calculation, 
+    and steering angle generation using a single target waypoint.
+
+Inputs:
+    - /autodrive/f1tenth_1/ips (geometry_msgs/Point): Vehicle position.
+    - /autodrive/f1tenth_1/imu (sensor_msgs/Imu)    : Vehicle orientation (Yaw).
+Outputs:
+    - /autodrive/f1tenth_1/steering_command (std_msgs/Float32): Calculated steering angle.
+    - /autodrive/f1tenth_1/throttle_command (std_msgs/Float32): Constant speed command.
+===============================================================================
+"""
+
 
 #-----------------------Global variables-------------------------------- 
 # pure pursuit parameter 

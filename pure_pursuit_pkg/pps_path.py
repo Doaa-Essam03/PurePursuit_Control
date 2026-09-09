@@ -8,15 +8,31 @@ from std_msgs.msg import String , Float32
 from geometry_msgs.msg import Point 
 from sensor_msgs.msg import Imu
 
-''' 1 > the initial position of car known from ips sensor data  
-    2 > the target here is one goal point to verfiy the pure pursuit control
-    start with a one goal point (selected based on a lookahead assumed ) located on the y axis of the car 
-    3 > impelement the pure pursuit formula to get the steering angle value
-'''
+"""
+===============================================================================
+Module: pps_path.py
+Description:
+    ROS 2 Pure Pursuit Controller for generated mathematical paths 
+    (e.g., Zig-Zag, S-Curve).testing in explore map 
+    
+    This node evaluates trajectory tracking across array-based waypoints generated 
+    programmatically. It includes sequential waypoint switching based on 
+    the lookahead radius.
+
+    - Increments target index when distance to current goal falls within threshold.
+
+Inputs:
+    - /autodrive/f1tenth_1/ips (geometry_msgs/Point)
+    - /autodrive/f1tenth_1/imu (sensor_msgs/Imu)
+Outputs:
+    - /autodrive/f1tenth_1/steering_command (std_msgs/Float32)
+    - /autodrive/f1tenth_1/throttle_command (std_msgs/Float32)
+===============================================================================
+"""
 
 #-----------------------Global variables-------------------------------- 
 # pure pursuit parameter 
-look_ahead = 1.5  # 3 > 2.5 good but far ##  1.5 > 1 good # .3 > 1 not good  
+look_ahead = 1.5    # 3 > 2.5 good but cutting some edges ##  1.5 > 1 good # .3 > 1 not good  
 wheelbase = 0.3240 
 
 
@@ -27,17 +43,44 @@ postition = np.array([x_postition , y_postition ])
 
 car_yaw = 0.0
 
-## Goal path points position in world frame 
-#S-Curve Path
-#x2 = np.linspace(0, 30, 40 ) + x_postition
-#y2 =  -5 * np.sin(0.5 * x2) + y_postition 
+# ----------------------- Generated Paths Selection --------------------------------
+## Goal path points created relative to world frame 
+# Choose path mode: 'straight', 's_curve', 'circle', 'sharp_turn', 'zig_zag'
+PATH_TYPE = 'zig_zag'  
 
-# 5. Zig-Zag Path
-x = np.linspace(0, 15, 20) + x_postition
-y = y_postition - 10 * np.sign(np.sin(2 * np.pi * x / 10))
+def generate_path(path_type, x_init, y_init):
+    """Switch-case generator for trajectory waypoints."""
+    
+    if path_type == 'straight':
+        x = np.linspace(0, 4, 100) + x_init
+        y = np.linspace(0, 7, 100) + y_init
+        
+    elif path_type == 's_curve':
+        x = np.linspace(0, 30, 40) + x_init
+        y = -5 * np.sin(0.5 * x) + y_init
+        
+    elif path_type == 'circle':
+        theta = np.linspace(0, 2 * np.pi, 100)
+        radius = 2
+        x = x_init + radius * np.cos(theta)
+        y = y_init + radius * np.sin(theta)
+        
+    elif path_type == 'sharp_turn':
+        x = np.concatenate([np.linspace(0, 1.75, 50), np.full(50, 1.75)]) + x_init
+        y = np.concatenate([np.full(50, 0), np.linspace(0, 7, 50)]) + y_init
+        
+    elif path_type == 'zig_zag':
+        x = np.linspace(0, 15, 20) + x_init
+        y = y_init - 10 * np.sign(np.sin(2 * np.pi * x / 10))
+        
+    else:
+        raise ValueError(f"Unknown path_type: {path_type}")
+        
+    return x, y
 
-
-goal = np.column_stack((x , y ))
+# Generate unified x and y
+x, y = generate_path(PATH_TYPE, x_postition, y_postition)
+goal = np.column_stack((x, y))
 
 count = 0
 

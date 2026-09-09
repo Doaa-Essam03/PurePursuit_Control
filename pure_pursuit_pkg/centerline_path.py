@@ -3,6 +3,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+"""
+===============================================================================
+Module: centerline_path.py
+Description:
+    Quick-visualization script for inspecting raw centerline CSV track data.
+===============================================================================
+"""
+
 # Load the CSV file
 path_df = pd.read_csv('/home/doaa/f1_tenth/src/pure_pursuit_pkg/pure_pursuit_pkg/csv_paths_practice_cdc/Centerline_points.csv')  
 

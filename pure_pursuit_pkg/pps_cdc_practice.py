@@ -9,12 +9,23 @@ from std_msgs.msg import String , Float32
 from geometry_msgs.msg import Point 
 from sensor_msgs.msg import Imu
 import math
+"""
+===============================================================================
+Module: pps_cdc_practice.py
+Description:
+    ROS 2 Pure Pursuit Controller for full racetrack tracking using CSV waypoints.
+    This node loads centerline track data,
+    and continuously updates target lookahead points from pre-recorded track maps.
+    - Features lap loop-around logic for continuous multi-lap track navigation.
 
-''' 1 > the initial position of car known from ips sensor data  
-    2 > the target here is one goal point to verfiy the pure pursuit control
-    start with a one goal point (selected based on a lookahead assumed ) located on the y axis of the car 
-    3 > impelement the pure pursuit formula to get the steering angle value
-'''
+Inputs:
+    - /autodrive/f1tenth_1/ips (geometry_msgs/Point)
+    - /autodrive/f1tenth_1/imu (sensor_msgs/Imu)
+Outputs:
+    - /autodrive/f1tenth_1/steering_command (std_msgs/Float32)
+    - /autodrive/f1tenth_1/throttle_command (std_msgs/Float32)
+===============================================================================
+"""
 
 #-----------------------Global variables-------------------------------- 
 
@@ -57,8 +68,8 @@ fig, ax = plt.subplots()
 # Red dot for current position
 sc, = ax.plot([], [], 'ro')
 
-# Green X for goal point
-# Plot all waypoints as green Xs
+
+# Plot all waypoints 
 goal_markers = ax.plot(goal[:, 1],goal[:, 0],  'm.')[0]
 
 # Line to draw full path
@@ -155,9 +166,6 @@ def timer_func( node, st_pub , thr_pub ) :
     curve = curvature_calc ( xy_cf )
     steer = steering_func( wheelbase, curve )
     st.data =  float(steer)
-
-
-    # #math.sqrt(3.906*9.81*1/abs(curve)) 
     
     thr_msg = velocity
     thr.data = thr_msg
